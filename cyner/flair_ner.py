@@ -23,5 +23,6 @@ class Flair(EntityExtraction):
         entities = []
         for x in pred['entities']:
             # 'labels' are formatted as [(TAG prob), ...]
-            entities.append(Entity(x['start_pos'], x['end_pos'], x['text'], x['labels'][0]['value'], x['labels'][0]['score']))
+            print(x['labels'][0])
+            entities.append(Entity(x['start_pos'], x['end_pos'], x['text'], x['labels'][0]['value'], x['labels'][0]['confidence']))
         return entities
