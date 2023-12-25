@@ -13,7 +13,8 @@ class TransformersNER(EntityExtraction):
     def __init__(self, config):
         super().__init__(config)
         self.config = config
-        self.classifier = None
+        #self.classifier = None
+        self.classifier = PredictTransformersNER(self.config.get('model', 'xlm-roberta-base'))
 
     def train(self):
         config = self.config
