@@ -2,8 +2,8 @@ from .entity_extraction_factory import EntityExtractionFactory as eef
 
 
 class CyNER(): 
-    def __init__(self, transformer_model='models/xlm-roberta-base', use_heuristic=True, flair_model='ner', spacy_model=None, priority='HTFS'):
-        self.transformer_ner = eef.get_entity_extraction_model('transformers', {'model': transformer_model})
+    def __init__(self, transformer_model='models/xlm-roberta-base', use_heuristic=True, flair_model='ner', spacy_model=None, priority='HTFS', label2id=None):
+        self.transformer_ner = eef.get_entity_extraction_model('transformers', {'model': transformer_model, 'label2id': label2id})
         self.heuristic_ner = None
         if use_heuristic:
             self.heuristic_ner = eef.get_entity_extraction_model('heuristics', {})

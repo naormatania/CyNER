@@ -14,7 +14,7 @@ __all__ = 'TransformersNER'
 class TransformersNER:
     """ Named-Entity-Recognition (NER) API for an inference """
 
-    def __init__(self, transformers_model: str, cache_dir: str = None):
+    def __init__(self, transformers_model: str, cache_dir: str = None, label2id: str = None):
         """ Named-Entity-Recognition (NER) API for an inference
 
          Parameter
@@ -24,7 +24,9 @@ class TransformersNER:
         """
         logging.info('*** initialize network ***')
         self.model = transformers.AutoModelForTokenClassification.from_pretrained(transformers_model)
-        self.id_to_label = {v: str(k) for k, v in self.model.config.label2id.items()}
+        if label2id is None:
+            label2id = self.model.config.label2id
+        self.id_to_label = {v: str(k) for k, v in label2id.items()}
         self.transforms = Transforms(transformers_model, cache_dir=cache_dir)
 
         # GPU allocation
