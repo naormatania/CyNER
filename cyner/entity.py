@@ -1,5 +1,5 @@
 class Entity:
-    def __init__(self, start, end, text, entity_type, confidence=1):
+    def __init__(self, start, end, text, entity_type, confidence=1, sent=""):
         """
         :param start: start position of the entity in the source text
         :param end: end position of the entity in the source text
@@ -12,6 +12,7 @@ class Entity:
         self.text = text
         self.entity_type = entity_type
         self.confidence = confidence
+        self.sent = sent
 
     def __str__(self, ):
         return 'Mention: {}, Class: {}, Start: {}, End: {}, Confidence: {:.2f}'.\
