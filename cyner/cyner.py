@@ -57,6 +57,7 @@ class CyNER():
         models = self.construct_priority_model_list()
         
         for model in models:
+            print(type(model))
             entities = model.get_entities(text)
             merged_entities = self.merge_entities(merged_entities, entities)
         return merged_entities
