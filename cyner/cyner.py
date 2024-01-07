@@ -59,5 +59,6 @@ class CyNER():
         for model in models:
             print(type(model))
             entities = model.get_entities(text)
+            print("merge entities")
             merged_entities = self.merge_entities(merged_entities, entities)
         return merged_entities
