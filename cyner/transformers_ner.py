@@ -87,6 +87,6 @@ class TransformersNER(EntityExtraction):
             mention = x['mention']
             entity_type = x['type']
             confidence = x['probability']
-            entities.append(Entity(start, end, mention, entity_type, confidence, sent))
+            entities.append(Entity(start, end, mention, entity_type, confidence))
         
         return entities
