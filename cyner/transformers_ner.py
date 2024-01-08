@@ -72,3 +72,21 @@ class TransformersNER(EntityExtraction):
                 entities.append(Entity(span[0]+start, span[0]+end, mention, entity_type, confidence, sent))
         
         return entities
+    
+    def get_entities_no_split(self, text):
+        config = self.config
+        max_seq_length = config.get('max_seq_length', 128)
+
+        if self.classifier is None:
+            self.classifier = PredictTransformersNER(self.config.get('model', 'xlm-roberta-base'))
+        
+        entities = []
+        ret = self.classifier.predict([text], max_seq_length=max_seq_length)
+        for x in ret[0]['entity']:
+            start, end = x['position']
+            mention = x['mention']
+            entity_type = x['type']
+            confidence = x['probability']
+            entities.append(Entity(span[0]+start, span[0]+end, mention, entity_type, confidence, sent))
+        
+        return entities
