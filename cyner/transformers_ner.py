@@ -52,7 +52,7 @@ class TransformersNER(EntityExtraction):
 
         trainer.train(monitor_validation=True)
 
-    def get_entities(self, text, max_seq_length):
+    def get_entities(self, text):
         if self.classifier is None:
             self.classifier = PredictTransformersNER(self.config.get('model', 'xlm-roberta-base'))
             
@@ -60,7 +60,7 @@ class TransformersNER(EntityExtraction):
         entities = []
         for span in spans:
             sent = text[span[0]: span[1]]
-            ret = self.classifier.predict([sent], max_seq_length)
+            ret = self.classifier.predict([sent])
             for x in ret[0]['entity']:
                 start, end = x['position']
                 mention = x['mention']

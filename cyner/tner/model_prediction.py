@@ -57,7 +57,7 @@ class TransformersNER:
         result = sorted(result, key=lambda x: x[1][0])
         return result
 
-    def predict(self, x: List, max_seq_length: int = 128):
+    def predict(self, x: List, max_seq_length: int = 512):
         """ Get prediction
 
          Parameter
