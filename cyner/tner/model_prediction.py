@@ -83,6 +83,7 @@ class TransformersNER:
         entities = []
         for n, e in enumerate(encode['input_ids'].cpu().tolist()):
             sentence = self.transforms.tokenizer.decode(e, skip_special_tokens=True)
+            #Fix 2: sentence = sentence[1:]
             pred = torch.max(logit[n], dim=-1)[1].cpu().tolist()
             activated = nn.Softmax(dim=-1)(logit[n])
             prob = torch.max(activated, dim=-1)[0].cpu().tolist()
@@ -92,14 +93,19 @@ class TransformersNER:
             _entities = []
             for tag, (start, end) in tag_lists:
                 mention = self.transforms.tokenizer.decode(e[start:end], skip_special_tokens=True)
+                #Fix 2: mention = mention[1:]
                 if not len(mention.strip()): continue
                 start_char = len(self.transforms.tokenizer.decode(e[:start], skip_special_tokens=True))
                 
                 if start_char < len(sentence) and sentence[start_char] == ' ':
+                    # This explains everything: https://github.com/huggingface/tokenizers/issues/608
+                    # I.e AI4Sec/cyner-xlm-roberta-base tokenizer doesn't add whitespace in the beginning of sentence but
+                    # CyberPeace-Institute/SecureBERT-NER does (which is the standard)
+                    # TODO: This seems to cause bug in non-cyner model
                     start_char += 1
                 end_char = start_char + len(mention)
                 if mention != sentence[start_char:end_char]:
-                    # logging.warning('entity mismatch: {} vs {}'.format(mention, sentence[start_char:end_char]))
+                    logging.warning('entity mismatch: {} vs {}'.format(mention, sentence[start_char:end_char]))
                     continue
                 result = {'type': tag, 'position': [start_char, end_char], 'mention': mention,
                           'probability': sum(prob[start: end])/(end - start)}
