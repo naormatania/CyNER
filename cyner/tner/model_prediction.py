@@ -24,7 +24,8 @@ class TransformersNER:
         """
         logging.info('*** initialize network ***')
         self.model = transformers.AutoModelForTokenClassification.from_pretrained(transformers_model)
-        self.model = torch.compile(self.model)
+        # TODO: this doesn't work right now. Figure out why
+        # self.model = torch.compile(self.model)
         if label2id is None:
             label2id = self.model.config.label2id
         self.id_to_label = {v: str(k) for k, v in label2id.items()}
