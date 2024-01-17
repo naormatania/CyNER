@@ -83,7 +83,7 @@ class TransformersNER:
         encode = list(data_loader)[0]
         logit = self.model(**{k: v.to(self.device) for k, v in encode.items()}, return_dict=True)['logits']
         entities = []
-        for n, s, e in enumerate(zip(x, encode['input_ids'].cpu().tolist())):
+        for n, (s, e) in enumerate(zip(x, encode['input_ids'].cpu().tolist())):
             sentence = self.transforms.tokenizer.decode(e, skip_special_tokens=True)
             #Fix 2: sentence = sentence[1:]
             pred = torch.max(logit[n], dim=-1)[1].cpu().tolist()
