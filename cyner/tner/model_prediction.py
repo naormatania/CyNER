@@ -106,15 +106,10 @@ class TransformersNER:
                     # TODO: This seems to cause bug in non-cyner model
                     start_char += 1
                 end_char = start_char + len(mention)
-                if mention != s[start_char:end_char]:
-                    #start_char = s.index(mention)
-                    #end_char = end_char = start_char + len(mention)
-                    logging.warning('entity mismatch: {} vs {}'.format(mention, s[start_char:end_char]))
-                    print("original sentence: ", s)
-                    print("decode sentence: ", sentence)
-                    print("decoded start: ", self.transforms.tokenizer.decode(e[:start], skip_special_tokens=True))
-                    print("start_char: ", start_char)
-                    continue
+                if mention != sentence[start_char:end_char]:
+                    #logging.warning('entity mismatch: {} vs {}'.format(mention, sentence[start_char:end_char]))
+                    start_char = s.index(mention)
+                    end_char = start_char + len(mention)
                 result = {'type': tag, 'position': [start_char, end_char], 'mention': mention,
                           'probability': sum(prob[start: end])/(end - start)}
                 _entities.append(result)
