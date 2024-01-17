@@ -108,6 +108,9 @@ class TransformersNER:
                 end_char = start_char + len(mention)
                 if mention != sentence[start_char:end_char]:
                     logging.warning('entity mismatch: {} vs {}'.format(mention, sentence[start_char:end_char]))
+                    print("original sentence: ", x)
+                    print("decode sentence: ", sentence)
+                    print("start_char: ", start_char)
                     continue
                 result = {'type': tag, 'position': [start_char, end_char], 'mention': mention,
                           'probability': sum(prob[start: end])/(end - start)}
