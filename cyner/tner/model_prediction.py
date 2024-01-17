@@ -83,7 +83,7 @@ class TransformersNER:
         encode = list(data_loader)[0]
         logit = self.model(**{k: v.to(self.device) for k, v in encode.items()}, return_dict=True)['logits']
         entities = []
-        for n, e in enumerate(encode['input_ids'].cpu().tolist()):
+        for n, s, e in enumerate(zip(x, encode['input_ids'].cpu().tolist())):
             sentence = self.transforms.tokenizer.decode(e, skip_special_tokens=True)
             #Fix 2: sentence = sentence[1:]
             pred = torch.max(logit[n], dim=-1)[1].cpu().tolist()
@@ -97,8 +97,8 @@ class TransformersNER:
                 mention = self.transforms.tokenizer.decode(e[start:end], skip_special_tokens=True)
                 #Fix 2: mention = mention[1:]
                 if not len(mention.strip()): continue
+
                 start_char = len(self.transforms.tokenizer.decode(e[:start], skip_special_tokens=True))
-                
                 if start_char < len(sentence) and sentence[start_char] == ' ':
                     # This explains everything: https://github.com/huggingface/tokenizers/issues/608
                     # I.e AI4Sec/cyner-xlm-roberta-base tokenizer doesn't add whitespace in the beginning of sentence but
@@ -106,10 +106,13 @@ class TransformersNER:
                     # TODO: This seems to cause bug in non-cyner model
                     start_char += 1
                 end_char = start_char + len(mention)
-                if mention != sentence[start_char:end_char]:
-                    logging.warning('entity mismatch: {} vs {}'.format(mention, sentence[start_char:end_char]))
-                    print("original sentence: ", x)
+                if mention != s[start_char:end_char]:
+                    #start_char = s.index(mention)
+                    #end_char = end_char = start_char + len(mention)
+                    logging.warning('entity mismatch: {} vs {}'.format(mention, s[start_char:end_char]))
+                    print("original sentence: ", s)
                     print("decode sentence: ", sentence)
+                    print("decoded start: ", self.transforms.tokenizer.decode(e[:start], skip_special_tokens=True))
                     print("start_char: ", start_char)
                     continue
                 result = {'type': tag, 'position': [start_char, end_char], 'mention': mention,
