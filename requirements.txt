@@ -16,4 +16,4 @@ transformers
 sentencepiece
 seqeval
 segtok
-optimum
+optimum[onnxruntime]
