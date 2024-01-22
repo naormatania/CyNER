@@ -10,6 +10,7 @@ import torch
 from torch import nn
 from seqeval.metrics import f1_score, precision_score, recall_score, classification_report
 from torch.utils.tensorboard import SummaryWriter
+from optimum.onnxruntime import ORTModelForTokenClassification
 
 from .get_dataset import get_dataset_ner
 from .checkpoint_versioning import Argument
@@ -48,7 +49,7 @@ class TrainTransformersNER:
         -----------------
         checkpoint_dir: str
             Checkpoint folder to log the model relevant files such as weight file. Once it's generated, one can use the
-            directory for transformers.AutoModelForTokenClassification.from_pretrained as well as model sharing on
+            directory for ORTModelForTokenClassification.from_pretrained as well as model sharing on
             transformers model hub.
         dataset: list or str
             List or str of dataset for training, alias of preset dataset (see tner.VALID_DATASET) or
@@ -132,7 +133,7 @@ class TrainTransformersNER:
         if self.model is not None:
             return
         if self.args.is_trained:
-            self.model = transformers.AutoModelForTokenClassification.from_pretrained(self.args.transformers_model)
+            self.model = ORTModelForTokenClassification.from_pretrained(self.args.transformers_model)
             self.transforms = Transforms(self.args.transformers_model, cache_dir=self.cache_dir)
             self.label_to_id = self.model.config.label2id
             self.dataset_split, self.label_to_id, self.language, self.unseen_entity_set = get_dataset_ner(
@@ -149,7 +150,7 @@ class TrainTransformersNER:
                 label2id=self.label_to_id,
                 cache_dir=self.cache_dir)
 
-            self.model = transformers.AutoModelForTokenClassification.from_pretrained(
+            self.model = ORTModelForTokenClassification.from_pretrained(
                 self.args.transformers_model, config=config)
 
             self.transforms = Transforms(self.args.transformers_model, cache_dir=self.cache_dir)

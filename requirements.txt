@@ -16,3 +16,4 @@ transformers
 sentencepiece
 seqeval
 segtok
+optimum

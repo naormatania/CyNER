@@ -5,6 +5,7 @@ import transformers
 import torch
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
+from optimum.onnxruntime import ORTModelForTokenClassification
 
 from .tokenizer import Transforms, Dataset
 
@@ -23,7 +24,7 @@ class TransformersNER:
             model name on transformers model hub or path to model directory
         """
         logging.info('*** initialize network ***')
-        self.model = transformers.AutoModelForTokenClassification.from_pretrained(transformers_model)
+        self.model = ORTModelForTokenClassification.from_pretrained(transformers_model)
         # TODO: this doesn't work right now. Figure out why
         # self.model = torch.compile(self.model)
         if label2id is None:
