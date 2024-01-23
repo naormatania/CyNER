@@ -82,6 +82,7 @@ class TransformersNER:
         encode_list = self.transforms.encode_plus_all(x, max_length=max_seq_length)
         data_loader = torch.utils.data.DataLoader(Dataset(encode_list), batch_size=len(encode_list))
         encode = list(data_loader)[0]
+        encode['attention_mask'] = encode['attention_mask'].type(torch.int64)
         logit = self.model(**{k: v.to(self.device) for k, v in encode.items()}, return_dict=True)['logits']
         entities = []
         for n, (s, e) in enumerate(zip(x, encode['input_ids'].cpu().tolist())):
