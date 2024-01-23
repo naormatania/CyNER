@@ -390,7 +390,7 @@ class TrainTransformersNER:
                       entity_span_prediction: bool = False):
         """ single epoch validation/test """
         # aggregate prediction and true label
-        self.model.eval()
+        # self.model.eval()
         seq_pred, seq_true = [], []
         for encode in data_loader:
             encode = {k: v.to(self.device) for k, v in encode.items()}

@@ -78,7 +78,7 @@ class TransformersNER:
                 'position': (list) start position and end position
                 'mention': (str) mention
         """
-        self.model.eval()
+        # self.model.eval()
         encode_list = self.transforms.encode_plus_all(x, max_length=max_seq_length)
         data_loader = torch.utils.data.DataLoader(Dataset(encode_list), batch_size=len(encode_list))
         encode = list(data_loader)[0]
