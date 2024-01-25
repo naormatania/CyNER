@@ -15,7 +15,7 @@ __all__ = 'TransformersNER'
 class TransformersNER:
     """ Named-Entity-Recognition (NER) API for an inference """
 
-    def __init__(self, transformers_model: str, cache_dir: str = None, label2id: str = None):
+    def __init__(self, transformers_model: str, cache_dir: str = None, label2id: str = None, session_options = None):
         """ Named-Entity-Recognition (NER) API for an inference
 
          Parameter
@@ -24,7 +24,7 @@ class TransformersNER:
             model name on transformers model hub or path to model directory
         """
         logging.info('*** initialize network ***')
-        self.model = ORTModelForTokenClassification.from_pretrained(transformers_model)
+        self.model = ORTModelForTokenClassification.from_pretrained(transformers_model, session_options=session_options)
         # TODO: this doesn't work right now. Figure out why
         # self.model = torch.compile(self.model)
         if label2id is None:
